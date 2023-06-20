@@ -1,47 +1,55 @@
 #!/usr/bin/python3
+""" Test delete feature
 """
-FileStorage module
-"""
+from models.base_model import BaseModel
+import json
+
 
 class FileStorage:
-    """
-    FileStorage class
-    """
-
-    def delete(self, obj=None):
-        """
-        Deletes an object from __objects if it exists.
-
-        Args:
-            obj (BaseModel): The object to delete.
-
-        Returns:
-            None
-        """
-        if obj is None:
-            return
-
-        key = "{}.{}".format(obj.__class__.__name__, obj.id)
-        if key in self.__objects:
-            del self.__objects[key]
-            self.save()
+    """ File storage class """
+    __file_path = "file.json"
+    __objects = {}
 
     def all(self, cls=None):
-        """
-        Returns a list of objects of a specific class.
-
-        Args:
-            cls (type): The class type to filter the objects.
-
-        Returns:
-            dict: A dictionary of objects of the specified class.
-        """
+        """ Returns a dictionary of objects """
         if cls is None:
             return self.__objects
+        else:
+            filtered_objects = {}
+            for obj_id, obj in self.__objects.items():
+                if type(obj) == cls:
+                    filtered_objects[obj_id] = obj
+            return filtered_objects
 
-        objects_by_cls = {}
+    def new(self, obj):
+        """ Sets an object to the __objects dictionary """
+        key = obj.__class__.__name__ + '.' + obj.id
+        self.__objects[key] = obj
+
+    def delete(self, obj=None):
+        """ Deletes an object from __objects if it exists """
+        if obj is not None:
+            key = obj.__class__.__name__ + '.' + obj.id
+            if key in self.__objects:
+                del self.__objects[key]
+
+    def save(self):
+        """ Serializes __objects to the JSON file """
+        serialized_objects = {}
         for key, obj in self.__objects.items():
-            if isinstance(obj, cls):
-                objects_by_cls[key] = obj
-        return objects_by_cls
+            serialized_objects[key] = obj.to_dict()
+        with open(self.__file_path, 'w') as file:
+            json.dump(serialized_objects, file)
+
+    def reload(self):
+        """ Deserializes the JSON file to __objects """
+        try:
+            with open(self.__file_path, 'r') as file:
+                deserialized_objects = json.load(file)
+                for key, value in deserialized_objects.items():
+                    class_name = value['__class__']
+                    obj = eval(class_name + '(**value)')
+                    self.__objects[key] = obj
+        except FileNotFoundError:
+            pass
 
