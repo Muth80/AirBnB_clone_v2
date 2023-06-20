@@ -11,3 +11,10 @@ else:
 
 storage.reload()
 
+# Existing imports
+from models.engine.db_storage import DBStorage
+
+# Move this line to the bottom
+storage = DBStorage()
+storage.reload()
+
