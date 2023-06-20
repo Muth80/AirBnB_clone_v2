@@ -1,25 +1,12 @@
-#!/bin/bash
+-- Create the hbnb_test_db database if it doesn't exist
+CREATE DATABASE IF NOT EXISTS hbnb_test_db;
 
-# Set MySQL connection parameters from environment variables
-MYSQL_USER=$HBNB_MYSQL_USER
-MYSQL_PASSWORD=$HBNB_MYSQL_PWD
-MYSQL_HOST=$HBNB_MYSQL_HOST
-MYSQL_DATABASE=$HBNB_MYSQL_DB
+-- Create the hbnb_test user with the password hbnb_test_pwd
+CREATE USER IF NOT EXISTS 'hbnb_test'@'localhost' IDENTIFIED BY 'hbnb_test_pwd';
 
-# Check if the database already exists
-EXISTING_DB=$(mysql -u"$MYSQL_USER" -p"$MYSQL_PASSWORD" -h"$MYSQL_HOST" -e "SELECT SCHEMA_NAME FROM INFORMATION_SCHEMA.SCHEMATA WHERE SCHEMA_NAME = '$MYSQL_DATABASE'" --skip-column-names)
+-- Grant all privileges on the hbnb_test_db database to hbnb_test user
+GRANT ALL PRIVILEGES ON hbnb_test_db.* TO 'hbnb_test'@'localhost';
 
-# Create the database if it doesn't exist
-if [ -z "$EXISTING_DB" ]; then
-    mysql -u"$MYSQL_USER" -p"$MYSQL_PASSWORD" -h"$MYSQL_HOST" -e "CREATE DATABASE $MYSQL_DATABASE"
-fi
-
-# Create the user and set the password
-mysql -u"$MYSQL_USER" -p"$MYSQL_PASSWORD" -h"$MYSQL_HOST" -e "CREATE USER IF NOT EXISTS 'hbnb_dev'@'localhost' IDENTIFIED BY '$HBNB_MYSQL_PWD'"
-
-# Grant privileges to the user on the database
-mysql -u"$MYSQL_USER" -p"$MYSQL_PASSWORD" -h"$MYSQL_HOST" -e "GRANT ALL PRIVILEGES ON $MYSQL_DATABASE.* TO 'hbnb_dev'@'localhost'"
-
-# Grant SELECT privilege on performance_schema
-mysql -u"$MYSQL_USER" -p"$MYSQL_PASSWORD" -h"$MYSQL_HOST" -e "GRANT SELECT ON performance_schema.* TO 'hbnb_dev'@'localhost'"
+-- Grant SELECT privilege on the performance_schema database to hbnb_test user
+GRANT SELECT ON performance_schema.* TO 'hbnb_test'@'localhost';
 
