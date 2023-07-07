@@ -1,46 +1,28 @@
 #!/usr/bin/env bash
+# sets up web servers for the deployment of web_static
 
-# Install Nginx if not already installed
-if ! command -v nginx &> /dev/null; then
-    apt-get update
-    apt-get -y install nginx
-fi
+# Install nginx if it's not already installed
+sudo apt-get -y update
+sudo apt-get -y install nginx
 
-# Create necessary folders if they don't exist
-folders=(
-    "/data/"
-    "/data/web_static/"
-    "/data/web_static/releases/"
-    "/data/web_static/shared/"
-    "/data/web_static/releases/test/"
-)
+# Make required directories
+sudo mkdir -p /data/web_static/releases/test/
+sudo mkdir -p /data/web_static/shared/
 
-for folder in "${folders[@]}"; do
-    if [ ! -d "$folder" ]; then
-        mkdir -p "$folder"
-    fi
-done
+# Create a fake HTML file
+echo "Holberton School" | sudo tee /data/web_static/releases/test/index.html
 
-# Create a fake HTML file for testing
-echo -e "<html>\n\t<head>\n\t</head>\n\t<body>\n\t\tHolberton School\n\t</body>\n</html>" > /data/web_static/releases/test/index.html
+# Create a symbolic link, delete it if it already exists
+[ -e /data/web_static/current ] && sudo unlink /data/web_static/current
+sudo ln -s /data/web_static/releases/test/ /data/web_static/current
 
-# Create symbolic link /data/web_static/current
-if [ -L "/data/web_static/current" ]; then
-    rm /data/web_static/current
-fi
-ln -s /data/web_static/releases/test/ /data/web_static/current
+# Give ownership of the /data/ directory to the ubuntu user and group
+sudo chown -R ubuntu:ubuntu /data/
 
-# Give ownership of the /data/ folder to the ubuntu user and group
-chown -R ubuntu:ubuntu /data/
-
-# Update Nginx configuration
-config_file="/etc/nginx/sites-available/default"
-if grep -q "location /hbnb_static/ {" "$config_file"; then
-    sed -i "s@location /hbnb_static/ {@location /hbnb_static/ {\n\t\talias /data/web_static/current/;@" "$config_file"
-else
-    sed -i "/server_name _;/a\ \n\tlocation /hbnb_static/ {\n\t\talias /data/web_static/current/;\n\t}\n" "$config_file"
-fi
+# Update the Nginx configuration
+update="\n\tlocation /hbnb_static {\n\t\talias /data/web_static/current/;\n\t}\n"
+sudo sed -i "48i $update" /etc/nginx/sites-available/default
 
 # Restart Nginx
-service nginx restart
-
+sudo service nginx restart
+```
