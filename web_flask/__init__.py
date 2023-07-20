@@ -2,6 +2,8 @@
 """
 This module initializes the Flask app.
 """
+from .hello_route import *
+from .c_route import *
 
 from flask import Flask
 app = Flask(__name__)
