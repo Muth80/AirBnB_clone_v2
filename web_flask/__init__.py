@@ -15,6 +15,7 @@ from web_flask.2_c_route import *
 from web_flask.3_python_route import *
 from web_flask.4_number_route import *
 from web_flask.5_number_template import *
+from web_flask.6_number_odd_or_even import *
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=5000)
