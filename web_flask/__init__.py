@@ -2,6 +2,10 @@
 """
 This module initializes the Flask app.
 """
+from flask import Flask, render_template
+from models import storage
+from models.state import State
+from models.city import City
 from .hello_route import *
 from .c_route import *
 
