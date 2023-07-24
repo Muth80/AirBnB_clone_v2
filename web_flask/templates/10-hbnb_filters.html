@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>HBNB</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css">
+    <link rel="stylesheet" href="/static/styles/3-header.css" type="text/css">
+    <link rel="stylesheet" href="/static/styles/3-footer.css" type="text/css">
+    <link rel="stylesheet" href="/static/styles/4-common.css" type="text/css">
+    <link rel="stylesheet" href="/static/styles/6-filters.css" type="text/css">
+</head>
+<body>
+    <header>
+        <nav class="navbar">
+            <div class="container">
+                <div class="navbar-brand">
+                    <a class="navbar-item" href="/">
+                        <img src="https://raw.githubusercontent.com/Hexworks/zircon/main/zircon.examples/src/main/resources/icon.png" alt="AirBnB_logo" width="125" height="48">
+                    </a>
+                </div>
+            </div>
+        </nav>
+    </header>
+    <br>
+    <br>
+    <section class="container">
+        <div class="box">
+            <h1>Filters</h1>
+            <div class="filters">
+                <h3>States</h3>
+                <div class="popover">
+                    {% for state in states | sort(attribute='name') %}
+                    <div class="row">
+                        <input type="checkbox" name="state" value="{{ state.id }}">
+                        <p>{{ state.name }}</p>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+            <div class="filters">
+                <h3>Amenities</h3>
+                <div class="popover">
+                    {% for amenity in amenities | sort(attribute='name') %}
+                    <div class="row">
+                        <input type="checkbox" name="amenity" value="{{ amenity.id }}">
+                        <p>{{ amenity.name }}</p>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+            <div class="filters">
+                <h3>Cities</h3>
+                <div class="popover">
+                    {% for city in cities | sort(attribute='name') %}
+                    <div class="row">
+                        <input type="checkbox" name="city" value="{{ city.id }}">
+                        <p>{{ city.name }}</p>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </section>
+    <footer>
+        <p>&nbsp;</p>
+        <br>
+        <div class="footer">
+            <a href="https://www.facebook.com/zuck" target="_blank">
+                <i class="fab fa-facebook-square fa-2x"></i>
+            </a>
+            <a href="https://twitter.com/jack" target="_blank">
+                <i class="fab fa-twitter-square fa-2x"></i>
+            </a>
+            <a href="https://www.linkedin.com/in/egor-egorov/" target="_blank">
+                <i class="fab fa-linkedin fa-2x"></i>
+            </a>
+            <a href="https://github.com" target="_blank">
+                <i class="fab fa-github-square fa-2x"></i>
+            </a>
+            <br>
+            <p>2019 - 2023 AirBnB clone by Guillaume Salva</p>
+        </div>
+    </footer>
+</body>
+</html>
+
